@@ -15,6 +15,11 @@ body {
   margin-bottom: 30px;
 }
 
+.header h1 span {
+  color: #2a6496; /* Example blue color for the year */
+  font-weight: bold;
+}
+
 h1 {
   color: #333;
   margin-bottom: 5px;
@@ -27,22 +32,25 @@ h1 {
 
 .year-navigation {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   margin-bottom: 20px;
 }
 
 .year-navigation button {
-  background: none;
-  border: none;
-  font-size: 24px;
+  background: red;
+  border: 1px solid red;
+  border-radius: 5px;
+  font-size: 15px;
   cursor: pointer;
   padding: 5px 15px;
-  color: #333;
+  color: white;
 }
 
 .year-navigation button:hover {
-  color: #0066cc;
+  color: black;
+  background: none;
+  border: 1px solid red;
 }
 
 .current-year {
@@ -100,6 +108,15 @@ td {
 .week-number {
   color: #999;
   font-size: 12px;
+}
+
+.sunday {
+  color: red;
+}
+
+/* Optional: Make Sunday headers red too */
+.month th.sunday {
+  color: red;
 }
 
 .current-day {
