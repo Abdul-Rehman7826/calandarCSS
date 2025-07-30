@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Current year
   let currentYear = 2025;
 
-  // Chile holidays (example data - you should replace with actual Chile holidays)
+  // Chile holidays
   const holidays = {
     "01-01": "New Year",
     "04-19": "Good Friday",
@@ -44,8 +44,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialize the calendar
   function initCalendar() {
-    document.getElementById("current-year").textContent = currentYear;
+    updateYearElements(currentYear);
     renderMonths(currentYear);
+  }
+
+  // Update all year-related elements
+  function updateYearElements(year) {
+    document.querySelector(".header h1 span").textContent = year;
+    document.querySelector(
+      ".subtitle"
+    ).textContent = `Chile's ${year} calendar with holidays`;
+    document.querySelector(
+      ".header div:last-child"
+    ).textContent = `View the ${year} calendar with holidays and special dates in Chile.`;
+    document.getElementById("current-year").textContent = year;
+    document.getElementById("prev-year-label").textContent = year - 1;
+    document.getElementById("next-year-label").textContent = year + 1;
   }
 
   // Render all months for the year
@@ -88,6 +102,9 @@ document.addEventListener("DOMContentLoaded", function () {
     dayNames.forEach((day) => {
       const th = document.createElement("th");
       th.textContent = day;
+      if (day === "SU") {
+        th.classList.add("sunday");
+      }
       headerRow.appendChild(th);
     });
 
@@ -97,7 +114,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const firstDay = new Date(year, month, 1);
     const totalDays = new Date(year, month + 1, 0).getDate();
 
-    // Calculate week numbers and create calendar rows
+    // Calculate starting day (0=Monday, 6=Sunday)
+    let startingDay = (firstDay.getDay() + 6) % 7;
     let dayCounter = 1;
     let currentWeek = getWeekNumber(new Date(year, month, 1));
 
@@ -114,17 +132,19 @@ document.addEventListener("DOMContentLoaded", function () {
       for (let i = 0; i < 7; i++) {
         const cell = document.createElement("td");
 
-        // Adjust for Monday as first day of week
-        const dayOfWeek = (firstDay.getDay() + 6) % 7;
-
-        if ((dayCounter === 1 && i < dayOfWeek) || dayCounter > totalDays) {
-          // Empty cell before the first day or after the last day
+        if ((dayCounter === 1 && i < startingDay) || dayCounter > totalDays) {
+          // Empty cell
           cell.textContent = "";
         } else {
           // Add day number
           cell.textContent = dayCounter;
 
-          // Check if it's a holiday
+          // Highlight Sundays (i === 6 because Monday=0)
+          if (i === 6) {
+            cell.classList.add("sunday");
+          }
+
+          // Check for holidays
           const dateStr = `${String(month + 1).padStart(2, "0")}-${String(
             dayCounter
           ).padStart(2, "0")}`;
@@ -132,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
             cell.classList.add("holiday");
           }
 
-          // Check if it's today
+          // Highlight current day
           if (isCurrentMonth && dayCounter === today.getDate()) {
             cell.classList.add("current-day");
           }
@@ -166,12 +186,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Event listeners for year navigation
   document.getElementById("prev-year").addEventListener("click", function () {
     currentYear--;
-    initCalendar();
+    updateYearElements(currentYear);
+    renderMonths(currentYear);
   });
 
   document.getElementById("next-year").addEventListener("click", function () {
     currentYear++;
-    initCalendar();
+    updateYearElements(currentYear);
+    renderMonths(currentYear);
   });
 
   // Initialize the calendar
